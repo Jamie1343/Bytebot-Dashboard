@@ -1,13 +1,16 @@
+"use server";
 import { OPTIONS } from "@/app/api/auth/[...nextauth]/route";
+import ServerManager from "@/app/components/ServerManager";
 import { AppDataSource } from "@/app/lib/datasource";
 import * as entities from "@/app/lib/entities";
 import axios from "axios";
-import { getServerSession } from "next-auth";
+import { getServerSession, Session } from "next-auth";
 import React from "react";
 
 export default async function page({ params }: { params: any }) {
   const { guild } = await params;
-  const session = await getServerSession(OPTIONS);
+  let session: Session;
+  session = (await getServerSession(OPTIONS)) as Session;
   const token = (session as any).token;
 
   // ${(session as any).userID}
@@ -44,6 +47,7 @@ export default async function page({ params }: { params: any }) {
           }
         })
       )}
+      <ServerManager session={session}></ServerManager>
     </div>
   );
 }

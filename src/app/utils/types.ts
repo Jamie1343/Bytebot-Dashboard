@@ -8,3 +8,14 @@ export interface GuildData {
   permissions_new: string;
   features: string[];
 }
+
+export interface GuildToggles {
+  applicationCommands: boolean;
+  ban: boolean;
+  mute: boolean;
+  embedMaker: boolean;
+  giveaways: boolean;
+  purge: boolean;
+  setNickname: boolean;
+  role: boolean;
+}

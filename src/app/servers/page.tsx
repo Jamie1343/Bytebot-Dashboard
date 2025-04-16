@@ -6,6 +6,36 @@ import { GuildData } from "../utils/types";
 import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { ralway } from "../utils/fonts";
+
+//refresh token
+// const axios = require('axios');
+// const qs = require('qs');
+// let data = qs.stringify({
+//   'grant_type': 'refresh_token',
+//   'refresh_token': '82pjMkCzyh4ULDi5Cv6BS2AJyLDRzW',
+//   'client_id': '1296487151067856896',
+//   'client_secret': 'Hs_n4t_Jbo0-P61ceYp9G1U58xBbekqD'
+// });
+
+// let config = {
+//   method: 'post',
+//   maxBodyLength: Infinity,
+//   url: 'https://discord.com/api/oauth2/token',
+//   headers: {
+//     'Cookie': '__dcfduid=72cf97361ade11f080df8686bdfc1560; __sdcfduid=72cf97361ade11f080df8686bdfc15600fec99f8d743e795af454e04b1b88a957360e8ccdfa2c81e0ef10aeed33e8946; __cfruid=83d8c6d8f1cc006a8151e0ef662a6a0aff4f0454-1744820316; _cfuvid=cG6.JF7ZclRW18AlkKeoAgpmxdjKtNEB5tRPkpKlPgk-1744820316043-0.0.1.1-604800000',
+//     'Content-Type': 'application/x-www-form-urlencoded'
+//   },
+//   data : data
+// };
+
+// axios.request(config)
+// .then((response) => {
+//   console.log(JSON.stringify(response.data));
+// })
+// .catch((error) => {
+//   console.log(error);
+// });
 
 export default async function ServerList() {
   const session = await getServerSession(OPTIONS);
@@ -32,9 +62,9 @@ export default async function ServerList() {
     servers = data.map(async (guild) => {
       return (
         <Link href={`/manage/${guild.id}`} key={guild.id}>
-          <div>
-            <Image src={`https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.png`} alt={guild.name} width={50} height={50}></Image>
-            <h2>{guild.name}</h2>
+          <div className="flex flex-col items-center hover:scale-105 transition-transform">
+            <Image src={`https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.png`} alt={guild.name} width={1024} height={1024} className="w-[20%] rounded-xl"></Image>
+            <h2 className={`${ralway.className} text-xl font-bold`}>{guild.name}</h2>
           </div>
         </Link>
       );
@@ -43,8 +73,7 @@ export default async function ServerList() {
 
   return (
     <div>
-      <h1>server list {JSON.stringify(session)}</h1>
-      <div className="grid grid-cols-3">{servers}</div>
+      <div className="grid grid-cols-3 gap-y-6 mt-6 w-[90%] mx-auto bg-black/25 py-8 rounded-xl">{servers}</div>
     </div>
   );
 }

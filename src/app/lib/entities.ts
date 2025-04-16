@@ -140,3 +140,16 @@ export class BotGuildEntity {
   })
   toggles!: any;
 }
+@Entity({ name: "moderation" })
+export class BotModerationEntity {
+  @PrimaryGeneratedColumn("uuid")
+  id!: string;
+  @Column()
+  guild_id!: string;
+  @Column()
+  user_id!: string;
+  @Column()
+  moderation_type!: string;
+  @Column()
+  length!: string;
+}

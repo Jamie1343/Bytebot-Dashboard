@@ -3,6 +3,7 @@ import NextAuth, { AuthOptions } from "next-auth";
 import DiscordProvider from "next-auth/providers/discord";
 import * as entities from "../../../lib/entities";
 import { AppDataSource } from "@/app/lib/datasource";
+import async from "../../../servers/page";
 
 export const OPTIONS: AuthOptions = {
   adapter: TypeORMAdapter(
