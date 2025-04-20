@@ -7,7 +7,7 @@ import Footer from "./components/Footer";
 
 export default function Home() {
   return (
-    <div className="mt-12">
+    <div className="mt-24">
       <div className="flex flex-row gap-36">
         <div className="w-[50%] px-8">
           <h1 className={`text-6xl ${ralway.className} font-semibold`}>Introducing ByteBot: Your Ultimate Discord Companion!</h1>

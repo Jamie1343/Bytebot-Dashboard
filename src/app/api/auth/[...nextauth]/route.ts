@@ -30,7 +30,7 @@ export const OPTIONS: AuthOptions = {
     }),
   ],
   callbacks: {
-    session: async ({ session, user }) => {
+    session: async ({ session, token, user }) => {
       const data = await AppDataSource;
       const manager = data.manager;
 
@@ -40,6 +40,8 @@ export const OPTIONS: AuthOptions = {
 
       const accessToken = DbUser?.access_token;
       const userID = DbUser?.userId;
+
+      // (session as any).accessToken = token;
 
       return { ...session, accessToken, userID };
     },

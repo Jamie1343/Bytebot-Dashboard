@@ -1,8 +1,9 @@
 "use client";
 import { Session } from "next-auth";
 import React from "react";
+import { SessionData } from "../utils/types";
 
-export default function ServerManager({ session }: { session: Session }) {
+export default function ServerManager({ session }: { session: SessionData }) {
   return (
     <div>
       {JSON.stringify(session)}

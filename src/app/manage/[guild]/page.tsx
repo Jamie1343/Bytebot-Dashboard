@@ -3,39 +3,51 @@ import { OPTIONS } from "@/app/api/auth/[...nextauth]/route";
 import ServerManager from "@/app/components/ServerManager";
 import { AppDataSource } from "@/app/lib/datasource";
 import * as entities from "@/app/lib/entities";
+import { AccountEntity, BotGuildEntity } from "@/app/lib/entities";
+import { refreshToken } from "@/app/utils/tokenRefresh";
+import { SessionData } from "@/app/utils/types";
 import axios from "axios";
 import { getServerSession, Session } from "next-auth";
+import { redirect } from "next/navigation";
 import React from "react";
 
 export default async function page({ params }: { params: any }) {
   const { guild } = await params;
-  let session: Session;
-  session = (await getServerSession(OPTIONS)) as Session;
-  const token = (session as any).token;
 
-  // ${(session as any).userID}
-  // 1296487151067856896;
+  let session = (await getServerSession(OPTIONS)) as SessionData;
 
-  const dataDB = await AppDataSource;
-  const manager = dataDB.manager;
+  const manager = (await AppDataSource).manager;
+  const expires = await manager.findOneBy(AccountEntity, {
+    userId: session.userID,
+  });
 
-  const guilds = await manager.find<entities.BotGuildEntity>(entities.BotGuildEntity, {
+  if (expires!.expires_at! < Date.now() / 1000 && expires?.refresh_token != null) {
+    refreshToken(expires?.refresh_token);
+    console.log("Token Refresh");
+    session = (await getServerSession(OPTIONS))!;
+  }
+
+  const guilds = await manager.find<entities.BotGuildEntity>(BotGuildEntity, {
     //@ts-expect-error
     guild_id: guild,
   });
 
-  // let config = {
-  //   method: "get",
-  //   maxBodyLength: Infinity,
-  //   url: `https://discord.com/api/guilds/${guild}/members/582612701369335809`,
-  //   headers: {
-  //     Authorization: `Bearer ${token}`,
-  //     Cookie:
-  //       "__dcfduid=a475dba00b0d11f0ac90a2bbcafbb955; __sdcfduid=a475dba00b0d11f0ac90a2bbcafbb955f92f91409a49c02fc5c12046eddebe86c4bed9cd6e3079971d5938cc0b64bee4; __cfruid=fb3a1c8da57f753ab2166796ec205bf261e8f425-1743081367; _cfuvid=sQE4.1BkYZB50O5g_74VYVUJ2_duqPE1vbX6UW08cjM-1743081367077-0.0.1.1-604800000",
-  //   },
-  // };
+  const param = await params;
+  let config = {
+    method: "get",
+    maxBodyLength: Infinity,
+    url: `https://discord.com/api/users/@me/guilds?limit=1&after=${BigInt(param.guild) - BigInt(1)}`,
+    headers: {
+      Authorization: `Bearer ${session.accessToken}`,
+    },
+  };
 
-  // const data = (await axios.request(config)).data;
+  const perms = (await axios.request(config)).data[0].permissions;
+  console.log(perms);
+
+  if (perms.toString() != "2147483647") {
+    redirect("/");
+  }
 
   return (
     <div>
@@ -47,6 +59,7 @@ export default async function page({ params }: { params: any }) {
           }
         })
       )}
+      {}
       <ServerManager session={session}></ServerManager>
     </div>
   );

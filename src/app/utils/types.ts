@@ -19,3 +19,15 @@ export interface GuildToggles {
   setNickname: boolean;
   role: boolean;
 }
+
+export interface SessionData {
+  user: User;
+  accessToken: string;
+  userID: string;
+}
+
+export interface User {
+  name: string;
+  email: string;
+  image: string;
+}
